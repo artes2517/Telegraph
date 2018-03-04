@@ -1,5 +1,17 @@
-body {
+html, body, figure {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+}
+
+figure {
+  text-align: center;
+}
+
+input {
+  outline: 0;
+}
+
+#root {
+  max-width: 732px;
+  margin: 0 auto;
 }
