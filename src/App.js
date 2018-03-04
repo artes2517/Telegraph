@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { EditorState } from 'draft-js'
+import Editor from './components/Editor'
 import './App.css'
 
 class App extends Component {
@@ -7,10 +9,12 @@ class App extends Component {
     this.state = {
       title: '',
       author: '',
+      editorState: EditorState.createEmpty(),
       canEdit: true,
     }
     this.onTitleChange = (e) => this.setState({ title: e.target.value })
     this.onAuthorChange = (e) => this.setState({ author: e.target.value })
+    this.onEditorChange = (editorState) => this.setState({ editorState })
   }
 
   render() {
@@ -46,6 +50,11 @@ class App extends Component {
             </address>
           </header>
           <article className="App-article">
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onEditorChange}
+              placeholder="Your story..."
+            />
           </article>
           <aside className="App-aside">
             <button className="button">PUBLISH</button>
