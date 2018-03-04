@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import { Editor, EditorState, RichUtils } from 'draft-js'
+import decorator from './decorator'
 import './style.css'
 
 const getSelectedBlockElement = (range) => {
@@ -92,7 +93,7 @@ class RichEditor extends Component {
 
     let { editorState } = this.props
     if (!editorState) {
-      editorState = EditorState.createEmpty()
+      editorState = EditorState.createEmpty(decorator)
       onChange(editorState)
     }
 
