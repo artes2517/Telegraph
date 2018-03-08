@@ -1,24 +1,81 @@
 import React, { Component } from 'react'
-import { Container } from 'reactstrap';
+import { Container, Button } from 'reactstrap';
 import './MainPage.css'
+import { withRouter } from 'react-router-dom';
 
 class MainPage extends Component {
   constructor(props) {
-    super(props)
-    this.state = {
-      title: '',
-      author: '',
-      discription: '',
-      canEdit: true,
+    super(props);
+    this.storyId = this.props.location.pathname.substring(1);
+    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList));
+    this.getInitialState = this.getInitialState.bind(this);
+    this.state = this.getInitialState();
+    this.onTitleChange = (e) => this.setState({ title: e.target.value });
+    this.onAuthorChange = (e) => this.setState({ author: e.target.value });
+    this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value });
+    this.onPressedButtonPublish = this.onPressedButtonPublish.bind(this);
+    this.getLink = this.getLink.bind(this);
+  }
+
+  getInitialState() {
+    console.log(this.storyId)
+    if (this.storyId === '') {
+      return ({
+        title: '',
+        author: '' ,
+        discription: '',
+        dateTime: null,
+        buttonText: 'PUBLISH',
+        canEdit: true
+      });
     }
-    this.onTitleChange = (e) => this.setState({ title: e.target.value })
-    this.onAuthorChange = (e) => this.setState({ author: e.target.value })
-    this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value })
-    this.onPressedButtonPublish = this.onPressedButtonPublish.bind(this)
+    return {...this.storyList.get(this.storyId), buttonText: 'EDIT', canEdit: false}
+  }
+
+  getLink() {
+    let month = this.state.dateTime.getMonth();
+    let day = this.state.dateTime.getDate();
+    let prefix = 1;
+    let result = `${this.state.title}-${day}-${month}-${prefix}`;
+    let length = result.length - 1;
+    while (this.storyList.has(result)) {
+      prefix++;
+      result = result.substring(0, length) + prefix;
+    }
+    return result;
   }
 
   onPressedButtonPublish() {
-    console.log(this.state);
+    this.storyId = this.props.location.pathname.substring(1);
+    if (!this.state.canEdit) {
+      this.setState({ canEdit: true, buttonText: 'PUBLISH' });
+    } else {
+        if ((this.state.title !== '') && 
+          (this.state.author !== '') && 
+          (this.state.discription !== '')) {
+        this.state.dateTime = new Date();
+        let link;
+        console.log(this.storyId);
+        if (this.storyList.has(this.storyId)) {
+          link = this.storyId;
+          this.storyList.delete(link);
+        } else {
+          link = this.getLink();
+        }
+        this.storyList.set(
+            link,
+            {
+              title: this.state.title,
+              author: this.state.author,
+              discription: this.state.discription,
+              dateTime: this.state.dateTime,
+            }
+        );
+        localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
+        this.props.history.push(`/${link}`);
+        this.setState({ canEdit: false, buttonText: 'EDIT' });
+      }
+    }
   }
 
   render() {
@@ -57,11 +114,13 @@ class MainPage extends Component {
             <textarea 
               placeholder="Your story..." 
               value={this.state.discription}
-              onChange={this.onDiscriptionChange}>
+              onChange={this.onDiscriptionChange}
+              readOnly={!this.state.canEdit}
+            >
             </textarea>
           </article>
           <aside className="App-aside">
-            <button className="button" onClick={this.onPressedButtonPublish} >PUBLISH</button>
+            <Button className="button"onClick={this.onPressedButtonPublish}>{this.state.buttonText}</Button>
           </aside>
         </main>
       </Container>
@@ -69,4 +128,4 @@ class MainPage extends Component {
   }
 }
 
-export default MainPage;
+export default withRouter(MainPage);

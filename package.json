@@ -19,6 +19,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "moment": "^2.21.0",
+    "moment-timezone": "^0.5.14",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.1",
     "start": "^5.1.0"
   }
