@@ -16,7 +16,7 @@
   left: 50%;
   top: 0;
   right: 0;
-  margin: 46px 0 0 376px;
+  margin: 46px 0 0 300px;
 }
 
 .App-header h1, .App-header address {
@@ -67,4 +67,11 @@
   position: absolute;
   color: #999;
   z-index: -1;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  border: none;
+  outline: none;
 }

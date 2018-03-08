@@ -1,25 +1,29 @@
 import React, { Component } from 'react'
-import { EditorState } from 'draft-js'
-import Editor from './components/Editor'
-import './App.css'
+import { Container } from 'reactstrap';
+import './MainPage.css'
 
-class App extends Component {
+class MainPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
       title: '',
       author: '',
-      editorState: EditorState.createEmpty(),
+      discription: '',
       canEdit: true,
     }
     this.onTitleChange = (e) => this.setState({ title: e.target.value })
     this.onAuthorChange = (e) => this.setState({ author: e.target.value })
-    this.onEditorChange = (editorState) => this.setState({ editorState })
+    this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value })
+    this.onPressedButtonPublish = this.onPressedButtonPublish.bind(this)
+  }
+
+  onPressedButtonPublish() {
+    console.log(this.state);
   }
 
   render() {
     return (
-      <div className="App">
+      <Container className="App">
         <main className="App-main">
           <header className="App-header">
             <h1>
@@ -50,19 +54,19 @@ class App extends Component {
             </address>
           </header>
           <article className="App-article">
-            <Editor
-              editorState={this.state.editorState}
-              onChange={this.onEditorChange}
-              placeholder="Your story..."
-            />
+            <textarea 
+              placeholder="Your story..." 
+              value={this.state.discription}
+              onChange={this.onDiscriptionChange}>
+            </textarea>
           </article>
           <aside className="App-aside">
-            <button className="button">PUBLISH</button>
+            <button className="button" onClick={this.onPressedButtonPublish} >PUBLISH</button>
           </aside>
         </main>
-      </div>
+      </Container>
     )
   }
 }
 
-export default App
+export default MainPage;
