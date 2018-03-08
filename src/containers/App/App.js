@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import MainPage  from '../MainPage/MainPage';
+import StoryPage  from '../StoryPage/StoryPage';
 
 class App extends Component {
   render() {
     return (
-      <MainPage />
+      <StoryPage />
     )
   }
 }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Container, Button } from 'reactstrap';
-import './MainPage.css'
+import { Container, Button, Badge } from 'reactstrap';
+import './StoryPage.css'
 import { withRouter } from 'react-router-dom';
+import Moment from 'react-moment';
+import 'moment-timezone';
 
-class MainPage extends Component {
+class StoryPage extends Component {
   constructor(props) {
     super(props);
     this.storyId = this.props.location.pathname.substring(1);
@@ -79,53 +81,61 @@ class MainPage extends Component {
   }
 
   render() {
-    return (
-      <Container className="App">
-        <main className="App-main">
-          <header className="App-header">
-            <h1>
-              {this.state.title && <label htmlFor="title">Title</label>}
-              <input
-                id="title"
-                type="text"
-                className="input__lg"
-                value={this.state.title}
-                onChange={this.onTitleChange}
-                placeholder="Title"
-                autoComplete="off"
+    if ((this.storyId !== '') && !this.storyList.has(this.storyId)) {
+      return (
+        <Container className="App">
+          <h2><Badge>Not Found 404!</Badge></h2>
+        </Container>
+      )
+    } else {
+      return (
+        <Container className="App">
+          <main className="App-main">
+            <header className="App-header">
+              <h1>
+                {this.state.title && <label htmlFor="title">Title</label>}
+                <input
+                  id="title"
+                  type="text"
+                  className="input__lg"
+                  value={this.state.title}
+                  onChange={this.onTitleChange}
+                  placeholder="Title"
+                  autoComplete="off"
+                  readOnly={!this.state.canEdit}
+                />
+              </h1>
+              <address>
+                {this.state.author && <label htmlFor="author">Author</label>}
+                <input
+                  id="author"
+                  type="text"
+                  className="input__sm"
+                  value={this.state.author}
+                  onChange={this.onAuthorChange}
+                  placeholder="Your name"
+                  autoComplete="off"
+                  readOnly={!this.state.canEdit}
+                />
+              </address>
+            </header>
+            <article className="App-article">
+              <textarea 
+                placeholder="Your story..." 
+                value={this.state.discription}
+                onChange={this.onDiscriptionChange}
                 readOnly={!this.state.canEdit}
-              />
-            </h1>
-            <address>
-              {this.state.author && <label htmlFor="author">Author</label>}
-              <input
-                id="author"
-                type="text"
-                className="input__sm"
-                value={this.state.author}
-                onChange={this.onAuthorChange}
-                placeholder="Your name"
-                autoComplete="off"
-                readOnly={!this.state.canEdit}
-              />
-            </address>
-          </header>
-          <article className="App-article">
-            <textarea 
-              placeholder="Your story..." 
-              value={this.state.discription}
-              onChange={this.onDiscriptionChange}
-              readOnly={!this.state.canEdit}
-            >
-            </textarea>
-          </article>
-          <aside className="App-aside">
-            <Button className="button"onClick={this.onPressedButtonPublish}>{this.state.buttonText}</Button>
-          </aside>
-        </main>
-      </Container>
-    )
+              >
+              </textarea>
+            </article>
+            <aside className="App-aside">
+              <Button className="button"onClick={this.onPressedButtonPublish}>{this.state.buttonText}</Button>
+            </aside>
+          </main>
+        </Container>
+      )
+    }
   }
 }
 
-export default withRouter(MainPage);
+export default withRouter(StoryPage);
