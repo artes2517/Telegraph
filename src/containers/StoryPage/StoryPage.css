@@ -13,10 +13,10 @@
 
 .App-aside {
   position: fixed;
-  left: 50%;
+  left: 43%;
   top: 0;
   right: 0;
-  margin: 46px 0 0 300px;
+  margin: 46px 0 0 200px;
 }
 
 .App-header h1, .App-header address {
