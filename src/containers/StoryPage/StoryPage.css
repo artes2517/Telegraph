@@ -47,6 +47,7 @@
   line-height: 18px;
   color: #79828B;
   padding: 0 21px;
+  width: 170px;
 }
 
 .button {
@@ -79,4 +80,12 @@ textarea {
 
 h2 {
   text-align: center;
+}
+
+.moment-hidden {
+  visibility: hidden;
+}
+
+.moment-visible {
+  visibility: visible;
 }

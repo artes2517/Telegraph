@@ -28,10 +28,15 @@ class StoryPage extends Component {
         discription: '',
         dateTime: null,
         buttonText: 'PUBLISH',
-        canEdit: true
+        canEdit: true,
+        momentVisibility: 'moment-hidden'
       });
     }
-    return {...this.storyList.get(this.storyId), buttonText: 'EDIT', canEdit: false}
+    return {...this.storyList.get(this.storyId), 
+      buttonText: 'EDIT', 
+      canEdit: false,
+      momentVisibility: 'moment-visible'
+    }
   }
 
   getLink() {
@@ -50,7 +55,7 @@ class StoryPage extends Component {
   onPressedButtonPublish() {
     this.storyId = this.props.location.pathname.substring(1);
     if (!this.state.canEdit) {
-      this.setState({ canEdit: true, buttonText: 'PUBLISH' });
+      this.setState({ canEdit: true, buttonText: 'PUBLISH', momentVisibility: 'moment-hidden' });
     } else {
         if ((this.state.title !== '') && 
           (this.state.author !== '') && 
@@ -75,7 +80,7 @@ class StoryPage extends Component {
         );
         localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
         this.props.history.push(`/${link}`);
-        this.setState({ canEdit: false, buttonText: 'EDIT' });
+        this.setState({ canEdit: false, buttonText: 'EDIT', momentVisibility: 'moment-visible' });
       }
     }
   }
@@ -117,6 +122,9 @@ class StoryPage extends Component {
                   autoComplete="off"
                   readOnly={!this.state.canEdit}
                 />
+                <Moment className={this.state.momentVisibility} format="LLL">
+                  { this.state.dateTime }
+                </Moment> 
               </address>
             </header>
             <article className="App-article">
