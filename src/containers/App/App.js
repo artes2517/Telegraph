@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import StoryPage  from '../StoryPage/StoryPage';
+import NewStory  from '../NewStory/NewStory';
 
 class App extends Component {
   render() {
     return (
-      <StoryPage />
+      <NewStory />
     )
   }
 }
