@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/fake');
+mongoose.connect('mongodb://localhost/storyes');
 mongoose.Promise = global.Promise;
 
 app.use(bodyParser.json());
