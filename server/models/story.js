@@ -15,9 +15,13 @@ const StorySchema = new Schema({
     type: String,
     required: [true]
   },
-  dataTime: {
+  dateTime: {
     type: Date,
     default: Date.now(),
+    required: [true]
+  },
+  link: {
+    type: String,
     required: [true]
   }
 });

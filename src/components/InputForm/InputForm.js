@@ -1,23 +1,28 @@
 import React, { Component } from 'react'
-import { Container, Button, Badge } from 'reactstrap';
+import { Container, Button } from 'reactstrap';
 import './InputForm.css'
 import Moment from 'react-moment';
 import 'moment-timezone';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { PATH } from '../../constants/fetch-config';
 
 class InputForm extends Component {
   static propTypes = {
+    _id: PropTypes.string,
     title: PropTypes.string,
     author: PropTypes.string,
     discription: PropTypes.string,
     dateTime: PropTypes.instanceOf(Date),
+    flag: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     canEdit: PropTypes.bool.isRequired,
     momentVisibility: PropTypes.string.isRequired
   };
   
   static defaultProps = {
+    _id: '',
+    flag: '',
     title: '',
     author: '' ,
     discription: '',
@@ -32,6 +37,8 @@ class InputForm extends Component {
     this.storyId = this.props.location.pathname.substring(1);
     this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList));
     this.state = {
+      _id: this.props._id,
+      flag: this.props.flag,
       title: this.props.title,
       author: this.props.author ,
       discription: this.props.discription,
@@ -48,6 +55,7 @@ class InputForm extends Component {
   }
 
   getLink() {
+    this.state.dateTime = new Date();
     let month = this.state.dateTime.getMonth() + 1;
     let day = this.state.dateTime.getDate();
     month = month < 10 ? "0" + month : month;
@@ -65,7 +73,7 @@ class InputForm extends Component {
     return result;
   }
 
-  onPressedButtonPublish() {
+  async onPressedButtonPublish() {
     this.storyId = this.props.location.pathname.substring(1);
     if (!this.state.canEdit) {
       this.setState({ canEdit: true, buttonText: 'PUBLISH', momentVisibility: 'moment-hidden' });
@@ -73,7 +81,7 @@ class InputForm extends Component {
         if ((this.state.title !== '') && 
           (this.state.author !== '') && 
           (this.state.discription !== '')) {
-        this.state.dateTime = new Date();
+        //this.state.dateTime = new Date();
         let link;
         if (this.storyList.has(this.storyId)) {
           link = this.storyId;
@@ -81,15 +89,70 @@ class InputForm extends Component {
         } else {
           link = this.getLink();
         }
-        this.storyList.set(
-            link,
-            {
+
+        if (this.state._id === '') {
+          const res = await fetch(PATH, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
               title: this.state.title,
               author: this.state.author,
               discription: this.state.discription,
-              dateTime: this.state.dateTime,
+              link: link
+            })
+          })
+          .then(res => res.json())
+          .then(
+            (result) => {
+              this.state._id = result._id;
+              this.state.dateTime = result.dateTime;
+            },
+            (error) => {
+              this.state.flag = 'C';
             }
+          );
+        } else {
+          const res = await fetch(`${PATH}/${this.state._id}`, {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: this.state.title,
+              author: this.state.author,
+              discription: this.state.discription,
+              link: link
+            })
+          })
+          .then(res => res.json())
+          .then(
+            (result) => {
+              this.state.dateTime = result.dateTime;
+            },
+            (error) => {
+              if (this.state.flag !== 'C') {
+                this.state.flag = 'U';
+              }
+            }
+          );
+        }
+
+        this.storyList.set(
+          link,
+          {
+            _id: this.state._id,
+            title: this.state.title,
+            author: this.state.author,
+            discription: this.state.discription,
+            dateTime: this.state.dateTime,
+            flag: this.state.flag
+          }
         );
+
         localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
         this.props.history.push(`/${link}`);
         this.setState({ canEdit: false, buttonText: 'EDIT', momentVisibility: 'moment-visible' });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Button, Badge } from 'reactstrap';
+import { Container, Badge } from 'reactstrap';
 import './StoryPage.css'
 import { withRouter } from 'react-router-dom';
 import InputForm from '../../components/InputForm/InputForm';
@@ -22,7 +22,9 @@ class StoryPage extends Component {
       )
     }
     return (
-      <InputForm 
+      <InputForm
+        _id={this.story._id}
+        flag={this.story.flag}
         title={this.story.title}
         author={this.story.author}
         discription={this.story.discription}
