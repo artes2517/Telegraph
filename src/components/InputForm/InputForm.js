@@ -81,7 +81,6 @@ class InputForm extends Component {
         if ((this.state.title !== '') && 
           (this.state.author !== '') && 
           (this.state.discription !== '')) {
-        //this.state.dateTime = new Date();
         let link;
         if (this.storyList.has(this.storyId)) {
           link = this.storyId;
@@ -206,7 +205,12 @@ class InputForm extends Component {
               </textarea>
             </article>
           <aside className="App-aside">
-            <Button className="button"onClick={this.onPressedButtonPublish}>{this.state.buttonText}</Button>
+            <Button 
+              className="button" 
+              onClick={this.onPressedButtonPublish}
+            >
+             {this.state.buttonText}
+            </Button>
           </aside>
         </main>
       </Container>
