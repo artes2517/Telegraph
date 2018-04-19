@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import './NewStory.css'
-import { withRouter } from 'react-router-dom';
-import InputForm from '../../components/InputForm/InputForm';
-import { PATH } from '../../constants/fetch-config';
+import { withRouter } from 'react-router-dom'
+import InputForm from '../../components/InputForm/InputForm'
+import { PATH } from '../../constants/fetch-config'
 
 class NewStory extends Component {
   constructor(props) {
-    super(props);
-    this.storyList;
+    super(props)
+    this.storyList
   }
 
   async componentWillMount() {
-    let res;
-    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList));
+    let res
+    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
     if (this.storyList.size === 0) {
       res = await fetch(PATH, {
         method: 'GET',
@@ -35,19 +35,16 @@ class NewStory extends Component {
                 discription: value.discription,
                 dateTime: value.dateTime
               }
-            );
-          });
+            )
+          })
         }
-      );
+      )
     }
-    localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
+    localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()))
   }
 
   async componentDidMount() {
     for(let value of this.storyList) {
-      console.log(value);
-      console.log(value[0]);
-      console.log(value[1]);
       if (value[1].flag === 'C') {
         const res = await fetch(PATH, {
           method: 'POST',
@@ -65,13 +62,13 @@ class NewStory extends Component {
         .then(res => res.json())
         .then(
           (result) => {
-            value[1]._id = result._id;
-            value[1].dateTime = result.dateTime;
-            value[1].flag = '';
+            value[1]._id = result._id
+            value[1].dateTime = result.dateTime
+            value[1].flag = ''
           },
           (error) => {
           }
-        );
+        )
       } else if (value[1].flag === 'U') {
         const res = await fetch(`${PATH}/${value[1]._id}`, {
           method: 'PUT',
@@ -89,22 +86,22 @@ class NewStory extends Component {
         .then(res => res.json())
         .then(
           (result) => {
-            value[1].dateTime = result.dateTime;
-            value[1].flag = '';
+            value[1].dateTime = result.dateTime
+            value[1].flag = ''
           },
           (error) => {
           }
-        );
+        )
       }
     }
-    localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
+    localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()))
   }
 
   render() {
     return (
       <InputForm />
-    );
+    )
   }
 }
 
-export default withRouter(NewStory);
+export default withRouter(NewStory)

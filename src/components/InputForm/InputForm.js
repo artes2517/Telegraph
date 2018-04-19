@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Container, Button } from 'reactstrap';
+import { Container, Button } from 'reactstrap'
 import './InputForm.css'
-import Moment from 'react-moment';
-import 'moment-timezone';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-import { PATH } from '../../constants/fetch-config';
+import Moment from 'react-moment'
+import 'moment-timezone'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { PATH } from '../../constants/fetch-config'
 
 class InputForm extends Component {
   static propTypes = {
@@ -18,7 +18,7 @@ class InputForm extends Component {
     buttonText: PropTypes.string.isRequired,
     canEdit: PropTypes.bool.isRequired,
     momentVisibility: PropTypes.string.isRequired
-  };
+  }
   
   static defaultProps = {
     _id: '',
@@ -30,12 +30,12 @@ class InputForm extends Component {
     buttonText: 'PUBLISH',
     canEdit: true,
     momentVisibility: 'moment-hidden'
-  };
+  }
 
   constructor(props) {
-    super(props);
-    this.storyId = this.props.location.pathname.substring(1);
-    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList));
+    super(props)
+    this.storyId = this.props.location.pathname.substring(1)
+    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
     this.state = {
       _id: this.props._id,
       flag: this.props.flag,
@@ -46,47 +46,47 @@ class InputForm extends Component {
       buttonText: this.props.buttonText,
       canEdit: this.props.canEdit,
       momentVisibility: this.props.momentVisibility
-    };
-    this.onTitleChange = (e) => this.setState({ title: e.target.value });
-    this.onAuthorChange = (e) => this.setState({ author: e.target.value });
-    this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value });
-    this.onPressedButtonPublish = this.onPressedButtonPublish.bind(this);
-    this.getLink = this.getLink.bind(this);
+    }
+    this.onTitleChange = (e) => this.setState({ title: e.target.value })
+    this.onAuthorChange = (e) => this.setState({ author: e.target.value })
+    this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value })
+    this.onPressedButtonPublish = this.onPressedButtonPublish.bind(this)
+    this.getLink = this.getLink.bind(this)
   }
 
   getLink() {
-    this.state.dateTime = new Date();
-    let month = this.state.dateTime.getMonth() + 1;
-    let day = this.state.dateTime.getDate();
-    month = month < 10 ? "0" + month : month;
-    day = day < 10 ? "0" + day : day;
+    this.state.dateTime = new Date()
+    let month = this.state.dateTime.getMonth() + 1
+    let day = this.state.dateTime.getDate()
+    month = month < 10 ? "0" + month : month
+    day = day < 10 ? "0" + day : day
 
-    let prefix = 1;
-    let result = `${this.state.title}-${month}-${day}-${prefix}`;
-    let length = result.length - 1;
+    let prefix = 1
+    let result = `${this.state.title}-${month}-${day}-${prefix}`
+    let length = result.length - 1
 
     while (this.storyList.has(result)) {
-      prefix++;
-      result = result.substring(0, length) + prefix;
+      prefix++
+      result = result.substring(0, length) + prefix
     }
     
-    return result;
+    return result
   }
 
   async onPressedButtonPublish() {
-    this.storyId = this.props.location.pathname.substring(1);
+    this.storyId = this.props.location.pathname.substring(1)
     if (!this.state.canEdit) {
-      this.setState({ canEdit: true, buttonText: 'PUBLISH', momentVisibility: 'moment-hidden' });
+      this.setState({ canEdit: true, buttonText: 'PUBLISH', momentVisibility: 'moment-hidden' })
     } else {
         if ((this.state.title !== '') && 
           (this.state.author !== '') && 
           (this.state.discription !== '')) {
-        let link;
+        let link
         if (this.storyList.has(this.storyId)) {
-          link = this.storyId;
-          this.storyList.delete(link);
+          link = this.storyId
+          this.storyList.delete(link)
         } else {
-          link = this.getLink();
+          link = this.getLink()
         }
 
         if (this.state._id === '') {
@@ -106,13 +106,13 @@ class InputForm extends Component {
           .then(res => res.json())
           .then(
             (result) => {
-              this.state._id = result._id;
-              this.state.dateTime = result.dateTime;
+              this.state._id = result._id
+              this.state.dateTime = result.dateTime
             },
             (error) => {
-              this.state.flag = 'C';
+              this.state.flag = 'C'
             }
-          );
+          )
         } else {
           const res = await fetch(`${PATH}/${this.state._id}`, {
             method: 'PUT',
@@ -130,14 +130,14 @@ class InputForm extends Component {
           .then(res => res.json())
           .then(
             (result) => {
-              this.state.dateTime = result.dateTime;
+              this.state.dateTime = result.dateTime
             },
             (error) => {
               if (this.state.flag !== 'C') {
-                this.state.flag = 'U';
+                this.state.flag = 'U'
               }
             }
-          );
+          )
         }
 
         this.storyList.set(
@@ -150,11 +150,11 @@ class InputForm extends Component {
             dateTime: this.state.dateTime,
             flag: this.state.flag
           }
-        );
+        )
 
-        localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()));
-        this.props.history.push(`/${link}`);
-        this.setState({ canEdit: false, buttonText: 'EDIT', momentVisibility: 'moment-visible' });
+        localStorage.storyList = JSON.stringify(Array.from(this.storyList.entries()))
+        this.props.history.push(`/${link}`)
+        this.setState({ canEdit: false, buttonText: 'EDIT', momentVisibility: 'moment-visible' })
       }
     }
   }
@@ -218,4 +218,4 @@ class InputForm extends Component {
   }
 }
 
-export default withRouter(InputForm);
+export default withRouter(InputForm)

@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import { Container, Badge } from 'reactstrap';
+import { Container, Badge } from 'reactstrap'
 import './StoryPage.css'
-import { withRouter } from 'react-router-dom';
-import InputForm from '../../components/InputForm/InputForm';
+import { withRouter } from 'react-router-dom'
+import InputForm from '../../components/InputForm/InputForm'
 
 
 class StoryPage extends Component {
   constructor(props) {
-    super(props);
-    this.storyId = this.props.location.pathname.substring(1);
-    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList));
-    this.story = this.storyList.get(this.storyId);
+    super(props)
+    this.storyId = this.props.location.pathname.substring(1)
+    this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
+    this.story = this.storyList.get(this.storyId)
   }
 
   render() {
@@ -32,8 +32,8 @@ class StoryPage extends Component {
         buttonText={'Edit'} canEdit={false} 
         momentVisibility={'moment-visible'}
       />
-    );
+    )
   }
 }
 
-export default withRouter(StoryPage);
+export default withRouter(StoryPage)
