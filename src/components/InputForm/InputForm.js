@@ -36,7 +36,7 @@ class InputForm extends Component {
     super(props)
     this.storyId = this.props.location.pathname.substring(1)
     this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
-    this.state = {
+    this.setState({
       _id: this.props._id,
       flag: this.props.flag,
       title: this.props.title,
@@ -46,7 +46,7 @@ class InputForm extends Component {
       buttonText: this.props.buttonText,
       canEdit: this.props.canEdit,
       momentVisibility: this.props.momentVisibility
-    }
+    })
     this.onTitleChange = (e) => this.setState({ title: e.target.value })
     this.onAuthorChange = (e) => this.setState({ author: e.target.value })
     this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value })
