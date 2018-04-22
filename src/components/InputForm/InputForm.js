@@ -13,7 +13,6 @@ class InputForm extends Component {
     title: PropTypes.string,
     author: PropTypes.string,
     discription: PropTypes.string,
-    dateTime: PropTypes.instanceOf(Date),
     flag: PropTypes.string,
     buttonText: PropTypes.string.isRequired,
     canEdit: PropTypes.bool.isRequired,
@@ -36,7 +35,7 @@ class InputForm extends Component {
     super(props)
     this.storyId = this.props.location.pathname.substring(1)
     this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
-    this.setState({
+    this.state = {
       _id: this.props._id,
       flag: this.props.flag,
       title: this.props.title,
@@ -46,7 +45,8 @@ class InputForm extends Component {
       buttonText: this.props.buttonText,
       canEdit: this.props.canEdit,
       momentVisibility: this.props.momentVisibility
-    })
+    }
+    this.res = null
     this.onTitleChange = (e) => this.setState({ title: e.target.value })
     this.onAuthorChange = (e) => this.setState({ author: e.target.value })
     this.onDiscriptionChange = (e) => this.setState({ discription: e.target.value })
@@ -55,14 +55,15 @@ class InputForm extends Component {
   }
 
   getLink() {
-    this.state.dateTime = new Date()
-    let month = this.state.dateTime.getMonth() + 1
-    let day = this.state.dateTime.getDate()
+    let dataTime = new Date()
+    this.setState({ dateTime: dataTime })
+    let month = dataTime.getMonth() + 1
+    let day = dataTime.getDate()
     month = month < 10 ? "0" + month : month
     day = day < 10 ? "0" + day : day
 
     let prefix = 1
-    let result = `${this.state.title}-${month}-${day}-${prefix}`
+    let result = `${ this.state.title }-${ month }-${ day }-${ prefix }`
     let length = result.length - 1
 
     while (this.storyList.has(result)) {
@@ -88,9 +89,8 @@ class InputForm extends Component {
         } else {
           link = this.getLink()
         }
-
         if (this.state._id === '') {
-          const res = await fetch(PATH, {
+            this.res = await fetch(PATH, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -106,15 +106,17 @@ class InputForm extends Component {
           .then(res => res.json())
           .then(
             (result) => {
-              this.state._id = result._id
-              this.state.dateTime = result.dateTime
+              this.setState({
+                _id: result._id,
+                dateTime: result.dateTime
+              })
             },
             (error) => {
-              this.state.flag = 'C'
+              this.setState({ flag: 'C' })
             }
           )
         } else {
-          const res = await fetch(`${PATH}/${this.state._id}`, {
+            this.res = await fetch(`${PATH}/${this.state._id}`, {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -130,11 +132,11 @@ class InputForm extends Component {
           .then(res => res.json())
           .then(
             (result) => {
-              this.state.dateTime = result.dateTime
+              this.setState({ dateTime: result.dateTime })
             },
             (error) => {
               if (this.state.flag !== 'C') {
-                this.state.flag = 'U'
+                this.setState({ flag: 'U' })
               }
             }
           )

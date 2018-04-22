@@ -7,14 +7,14 @@ import { PATH } from '../../constants/fetch-config'
 class NewStory extends Component {
   constructor(props) {
     super(props)
-    this.storyList
+    this.storyList = null
+    this.res = null
   }
 
   async componentWillMount() {
-    let res
     this.storyList = (localStorage.storyList === undefined) ? new Map() : new Map(JSON.parse(localStorage.storyList))
     if (this.storyList.size === 0) {
-      res = await fetch(PATH, {
+        this.res = await fetch(PATH, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -46,7 +46,7 @@ class NewStory extends Component {
   async componentDidMount() {
     for(let value of this.storyList) {
       if (value[1].flag === 'C') {
-        const res = await fetch(PATH, {
+          this.res = await fetch(PATH, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -70,7 +70,7 @@ class NewStory extends Component {
           }
         )
       } else if (value[1].flag === 'U') {
-        const res = await fetch(`${PATH}/${value[1]._id}`, {
+          this.res = await fetch(`${PATH}/${value[1]._id}`, {
           method: 'PUT',
           headers: {
             Accept: 'application/json',
